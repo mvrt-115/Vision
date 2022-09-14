@@ -11,7 +11,7 @@ detector = Detector(searchpath=['apriltags'],
                     decode_sharpening=0.25,
                     debug=0)
 
-imagepath = 'mosaic2.png'
+imagepath = 'mosaic.png'
 image = cv2.imread(imagepath, cv2.IMREAD_GRAYSCALE)
 tags = detector.detect(image, estimate_tag_pose=False, camera_params=None, tag_size=None)
 
@@ -33,18 +33,16 @@ for t in tags :
     ptA = (int(ptA[0]), int(ptA[1]))
 
     # draw the bounding box of the AprilTag detection
-    cv2.line(colorImg, ptA, ptB, (0, 255, 0), 20)
-    cv2.line(colorImg, ptB, ptC, (0, 255, 0), 20)
-    cv2.line(colorImg, ptC, ptD, (0, 255, 0), 20)
-    cv2.line(colorImg, ptD, ptA, (0, 255, 0), 20)
+    cv2.line(colorImg, ptA, ptB, (0, 255, 0), 2)
+    cv2.line(colorImg, ptB, ptC, (0, 255, 0), 2)
+    cv2.line(colorImg, ptC, ptD, (0, 255, 0), 2)
+    cv2.line(colorImg, ptD, ptA, (0, 255, 0), 2)
 
     # draw the center (x, y)-coordinates of the AprilTag
     (cX, cY) = (int(t.center[0]), int(t.center[1]))
     cv2.circle(colorImg, (cX, cY), 5, (0, 0, 255), -1)
 
     print((cX, cY))
-
-cv2.circle(colorImg, (0, 0), 100, (255, 0, 0), -1)
 
 cv2.imshow("April Tags", colorImg)
 cv2.waitKey(0)
