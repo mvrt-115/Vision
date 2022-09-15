@@ -45,6 +45,8 @@ def draw_detect(frame):
     grayImage = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
     tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=[3156.71852, 3129.52243, 359.097908, 239.736909], tag_size=0.06)
 
+#
+
     for t in tags :
 
         print(t.pose_t)
