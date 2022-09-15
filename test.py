@@ -1,6 +1,7 @@
 from dt_apriltags import Detector
 import numpy
 import cv2
+import time
 
 detector = Detector(searchpath=['apriltags'],
                     families='tag36h11',
@@ -26,19 +27,23 @@ def main():
         if not ok:
             print("Unable to receive frame. Exiting...")
             break
-
+        
         draw_detect(frame)
+        cv2.imshow("April Tags", frame)
 
-        cv2.imshow(frame)
-        if cv2.waitKey(int(1000 / 60) == ord('q')):
+        if cv2.waitKey(25) & 0xFF == ord('q'):
             break
-
+        
     cap.release()
     cap.destroyAllWindows()
 
 def draw_detect(frame):
-    gray = cv2.cvtColor(cv2.COLOR_RGB2GRAY)
-    tags = detector.detect(gray, estimate_tag_pose=False, camera_params=None, tag_size=None)
+    #image = cv2.imread(imagepath, cv2.IMREAD_GRAYSCALE)
+    #colorImg = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+    #tags = detector.detect(image, estimate_tag_pose=False, camera_params=None, tag_size=None)
+    
+    grayImage = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+    tags = detector.detect(grayImage, estimate_tag_pose=False, camera_params=None, tag_size=None)
 
     for t in tags :
         (ptA, ptB, ptC, ptD) = t.corners
