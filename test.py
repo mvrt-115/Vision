@@ -11,40 +11,50 @@ detector = Detector(searchpath=['apriltags'],
                     decode_sharpening=0.25,
                     debug=0)
 
-imagepath = 'mosaic.png'
-image = cv2.imread(imagepath, cv2.IMREAD_GRAYSCALE)
-tags = detector.detect(image, estimate_tag_pose=False, camera_params=None, tag_size=None)
+def main():
+    cap = cv2.VideoCapture(0)
 
-colorImg = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+    if not cap.isOpened():
+        print("Unable to open camera")
+        exit()
 
-for t in tags :
-    c = t.corners
+    print("Press 'q' to quit")
 
-    # print("BL", c[0])
-    # print("BR", c[1])
-    # print("TR", c[2])
-    # print("TL", c[3])
-    # print()
+    while True:
+        ok, frame = cap.read()
 
-    (ptA, ptB, ptC, ptD) = t.corners
-    ptB = (int(ptB[0]), int(ptB[1]))
-    ptC = (int(ptC[0]), int(ptC[1]))
-    ptD = (int(ptD[0]), int(ptD[1]))
-    ptA = (int(ptA[0]), int(ptA[1]))
+        if not ok:
+            print("Unable to receive frame. Exiting...")
+            break
 
-    # draw the bounding box of the AprilTag detection
-    cv2.line(colorImg, ptA, ptB, (0, 255, 0), 2)
-    cv2.line(colorImg, ptB, ptC, (0, 255, 0), 2)
-    cv2.line(colorImg, ptC, ptD, (0, 255, 0), 2)
-    cv2.line(colorImg, ptD, ptA, (0, 255, 0), 2)
+        draw_detect(frame)
 
-    # draw the center (x, y)-coordinates of the AprilTag
-    (cX, cY) = (int(t.center[0]), int(t.center[1]))
-    cv2.circle(colorImg, (cX, cY), 5, (0, 0, 255), -1)
+        cv2.imshow(frame)
+        if cv2.waitKey(int(1000 / 60) == ord('q')):
+            break
 
-    print((cX, cY))
+    cap.release()
+    cap.destroyAllWindows()
 
-cv2.imshow("April Tags", colorImg)
-cv2.waitKey(0)
+def draw_detect(frame):
+    gray = cv2.cvtColor(cv2.COLOR_RGB2GRAY)
+    tags = detector.detect(gray, estimate_tag_pose=False, camera_params=None, tag_size=None)
 
-print(len(tags))
+    for t in tags :
+        (ptA, ptB, ptC, ptD) = t.corners
+        ptB = (int(ptB[0]), int(ptB[1]))
+        ptC = (int(ptC[0]), int(ptC[1]))
+        ptD = (int(ptD[0]), int(ptD[1]))
+        ptA = (int(ptA[0]), int(ptA[1]))
+
+        # draw the bounding box of the AprilTag detection
+        cv2.line(frame, ptA, ptB, (0, 255, 0), 20)
+        cv2.line(frame, ptB, ptC, (0, 255, 0), 20)
+        cv2.line(frame, ptC, ptD, (0, 255, 0), 20)
+        cv2.line(frame, ptD, ptA, (0, 255, 0), 20)
+
+        # draw the center (x, y)-coordinates of the AprilTag
+        (cX, cY) = (int(t.center[0]), int(t.center[1]))
+        cv2.circle(frame, (cX, cY), 5, (0, 0, 255), -1)
+
+main()
