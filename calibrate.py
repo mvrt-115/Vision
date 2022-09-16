@@ -28,7 +28,7 @@ objp[:,:2] = np.mgrid[0:7,0:6].T.reshape(-1,2)
 # Arrays to store object points and image points from all the images.
 objpoints = [] # 3d point in real world space
 imgpoints = [] # 2d points in image plane.
-images = glob.glob('calibrate.jpg')
+images = glob.glob('images/*.jpg')
 
 for fname in images:
     img = cv.imread(fname)
@@ -46,6 +46,8 @@ for fname in images:
         # Draw and display the corners
         cv.drawChessboardCorners(img, (7,6), corners2, ret)
         cv.imshow('img', img)
+        print("photo works")
+    cv.waitKey(100)
 
 #calibrate
 #camera matrix, distortion coefficients, rotation and translation vectors
