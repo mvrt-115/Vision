@@ -6,6 +6,13 @@
 #I also printed out the official chess board so we can use that tomorrow
 #!!!! <-
 
+#cameramatrix =
+#+------------+
+#| fx, 0,  cx |
+#| 0,  fy, cy |
+#| 0,  0,  1  |
+#+------------+
+
 import numpy as np
 import cv2 as cv
 import glob
