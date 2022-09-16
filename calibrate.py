@@ -6,12 +6,21 @@
 #I also printed out the official chess board so we can use that tomorrow
 #!!!! <-
 
-#cameramatrix =
+#get variables from cameramatrix like this:
+#once we have reliable pictures
 #+------------+
 #| fx, 0,  cx |
 #| 0,  fy, cy |
 #| 0,  0,  1  |
 #+------------+
+
+'''
+Read ->
+For better results, the distance between the camera and calibration grid should 
+be approximately equal to the working distance that you intend to maintain in your 
+application. Additionally, the resolution and focus of the camera should be maintained 
+constant while taking pictures.
+'''
 
 import numpy as np
 import cv2 as cv
