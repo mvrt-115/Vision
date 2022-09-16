@@ -56,4 +56,4 @@ def draw_detect(frame):
         (cX, cY) = (int(t.center[0]), int(t.center[1]))
         cv2.circle(frame, (cX, cY), 5, (0, 0, 255), -1)
 
-main()
+main() 
