@@ -1,10 +1,9 @@
-from dt_apriltags import Detector
+from pupil_apriltags import Detector
 import numpy
 import cv2
 import time
 
-detector = Detector(searchpath=['apriltags'],
-                    families='tag36h11',
+detector = Detector(families='tag36h11',
                     nthreads=1,
                     quad_decimate=1.0,
                     quad_sigma=0.0,
@@ -31,17 +30,12 @@ def main():
         draw_detect(frame)
         cv2.imshow("April Tags", frame)
 
-        if cv2.waitKey(25) & 0xFF == ord('q'):
+        if cv2.waitKey(1) & 0xFF == ord('q'):
             break
         
     cap.release()
-    cap.destroyAllWindows()
 
 def draw_detect(frame):
-    #image = cv2.imread(imagepath, cv2.IMREAD_GRAYSCALE)
-    #colorImg = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
-    #tags = detector.detect(image, estimate_tag_pose=False, camera_params=None, tag_size=None)
-    
     grayImage = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
     tags = detector.detect(grayImage, estimate_tag_pose=False, camera_params=None, tag_size=None)
 
