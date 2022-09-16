@@ -56,6 +56,9 @@ ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(objpoints, imgpoints, gray.sha
 h,  w = img.shape[:2]
 newcameramtx, roi = cv.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
 
+print(objpoints)
+print(imgpoints)
+
 print (mtx)
 print(newcameramtx)
 
