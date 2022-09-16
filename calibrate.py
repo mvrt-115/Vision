@@ -1,6 +1,11 @@
 #calibrate whatever camera we are using
 #src: https://docs.opencv.org/4.x/dc/dbb/tutorial_py_calibration.html
 
+#!!! ->
+#todo: make this a video so it can capture multiple photos? 
+#I also printed out the official chess board so we can use that tomorrow
+#!!!! <-
+
 import numpy as np
 import cv2 as cv
 import glob
