@@ -1,10 +1,10 @@
-from dt_apriltags import Detector
+#from dt_apriltags import Detector
+from pupil_apriltags import Detector
 import numpy
 import cv2
 import time
 
-detector = Detector(searchpath=['apriltags'],
-                    families='tag36h11',
+detector = Detector(families='tag36h11',
                     nthreads=1,
                     quad_decimate=1.0,
                     quad_sigma=0.0,
@@ -48,7 +48,6 @@ def draw_detect(frame):
 #
 
     for t in tags :
-
         print(t.pose_t)
 
         (ptA, ptB, ptC, ptD) = t.corners
