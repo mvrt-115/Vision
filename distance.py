@@ -38,17 +38,25 @@ def main():
     cap.destroyAllWindows()
 
 def draw_detect(frame):
-    #image = cv2.imread(imagepath, cv2.IMREAD_GRAYSCALE)
-    #colorImg = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
-    #tags = detector.detect(image, estimate_tag_pose=False, camera_params=None, tag_size=None)
-    
     grayImage = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
-    tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=[3156.71852, 3129.52243, 359.097908, 239.736909], tag_size=0.06)
 
-#
+    pixel_size = 0.004
+    resolution = 1280*720
+
+    #focal length
+    #fx = 3156.7
+    #fy = 3129.5
+    fx = pixel_size * resolution
+    fy = fx
+
+    #optiocal center
+    cx = 359.1
+    cy = 239.7
+
+    tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=[fx, fy, cx, cy], tag_size=0.06)
 
     for t in tags :
-        print(t.pose_t)
+        print(t.pose_t) #fix these
 
         (ptA, ptB, ptC, ptD) = t.corners
         ptB = (int(ptB[0]), int(ptB[1]))
