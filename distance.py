@@ -50,8 +50,8 @@ def draw_detect(frame):
     fy = fx
 
     #optiocal center
-    cx = 359.1
-    cy = 239.7
+    cx = 397.33508301
+    cy = 374.0359802
 
     tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=[fx, fy, cx, cy], tag_size=0.06)
 
