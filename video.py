@@ -26,7 +26,7 @@ def main():
         if not ok:
             print("Unable to receive frame. Exiting...")
             break
-        
+
         draw_detect(frame)
         cv2.imshow("April Tags", frame)
 
