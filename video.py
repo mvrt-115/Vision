@@ -26,7 +26,7 @@ def main():
         if not ok:
             print("Unable to receive frame. Exiting...")
             break
-        
+
         draw_detect(frame)
         cv2.imshow("April Tags", frame)
 
@@ -36,7 +36,7 @@ def main():
     cap.release()
 
 def draw_detect(frame):
-    grayImage = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+    grayImage = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     tags = detector.detect(grayImage, estimate_tag_pose=False, camera_params=None, tag_size=None)
 
     for t in tags :

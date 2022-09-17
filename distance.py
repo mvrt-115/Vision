@@ -1,4 +1,4 @@
-#from dt_apriltags import Detector
+#from dt_apriltags import Detector 
 from pupil_apriltags import Detector
 import numpy
 import cv2
@@ -38,7 +38,7 @@ def main():
     cap.destroyAllWindows()
 
 def draw_detect(frame):
-    grayImage = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+    grayImage = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     pixel_size = 0.004
     resolution = 1280*720
@@ -56,7 +56,10 @@ def draw_detect(frame):
     tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=[fx, fy, cx, cy], tag_size=0.06)
 
     for t in tags :
-        print(t.pose_t) #fix these
+        #print(t.pose_t)
+        print("--------------------------")
+        print(t.tag_id, "pose:", t.pose_t)
+        print("--------------------------")
 
         (ptA, ptB, ptC, ptD) = t.corners
         ptB = (int(ptB[0]), int(ptB[1]))
@@ -73,5 +76,11 @@ def draw_detect(frame):
         # draw the center (x, y)-coordinates of the AprilTag
         (cX, cY) = (int(t.center[0]), int(t.center[1]))
         cv2.circle(frame, (cX, cY), 5, (0, 0, 255), -1)
+
+        pose = t.pose_t
+        cv2.putText(frame, f'Tag id: {t.tag_id}', (cx, cy - 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 255), 2, cv2.LINE_AA)
+        cv2.putText(frame, f'Pose: ({pose[0]}, {pose[1]}, {pose[2]})', (cx, cy - 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 255), 2, cv2.LINE_AA)
+
+        print("rotation matrix: " + t.pose_R)
 
 main()
