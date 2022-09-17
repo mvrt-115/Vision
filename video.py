@@ -36,7 +36,7 @@ def main():
     cap.release()
 
 def draw_detect(frame):
-    grayImage = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+    grayImage = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     tags = detector.detect(grayImage, estimate_tag_pose=False, camera_params=None, tag_size=None)
 
     for t in tags :
@@ -55,5 +55,8 @@ def draw_detect(frame):
         # draw the center (x, y)-coordinates of the AprilTag
         (cX, cY) = (int(t.center[0]), int(t.center[1]))
         cv2.circle(frame, (cX, cY), 5, (0, 0, 255), -1)
+
+        print(t.pose_t)
+        print(t.pose_R)
 
 main()

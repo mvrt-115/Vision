@@ -1,10 +1,9 @@
-from dt_apriltags import Detector
+from pupil_apriltags import Detector
 import numpy
 import cv2
 import time
 
-detector = Detector(searchpath=['apriltags'],
-                    families='tag36h11',
+detector = Detector(families='tag36h11',
                     nthreads=1,
                     quad_decimate=1.0,
                     quad_sigma=0.0,
@@ -31,7 +30,7 @@ def main():
         draw_detect(frame)
         cv2.imshow("April Tags", frame)
 
-        if cv2.waitKey(25) & 0xFF == ord('q'):
+        if cv2.waitKey(int(1000/30)) & 0xFF == ord('q'):
             break
         
     cap.release()
@@ -42,8 +41,8 @@ def draw_detect(frame):
     #colorImg = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
     #tags = detector.detect(image, estimate_tag_pose=False, camera_params=None, tag_size=None)
     
-    grayImage = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
-    tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=[3156.71852, 3129.52243, 359.097908, 239.736909], tag_size=0.06)
+    grayImage = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=(3156.71852, 3129.52243, 359.097908, 239.736909), tag_size=.038)
 
 #
 
@@ -66,5 +65,8 @@ def draw_detect(frame):
         # draw the center (x, y)-coordinates of the AprilTag
         (cX, cY) = (int(t.center[0]), int(t.center[1]))
         cv2.circle(frame, (cX, cY), 5, (0, 0, 255), -1)
+
+        print(f'Transformed Translation: x: {t.pose_t[0]}, y: {-t.pose_t[1]}, z: {t.pose_t[2]}') # interested in our x, y which is (x, z)
+        print(f'Rotation: {t.pose_R}')
 
 main()
