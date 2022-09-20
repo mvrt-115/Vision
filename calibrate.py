@@ -78,5 +78,12 @@ dst = cv.undistort(img, mtx, dist, None, newcameramtx)
 x, y, w, h = roi
 dst = dst[y:y+h, x:x+w]
 cv.imwrite('calibresult.png', dst)
+error = 0
+for i in range(len(objpoints)):
+    projected_points = cv.projectPoints(objpoints[i], rvecs[i], tvecs[i], mtx, dist)[0]
+    temp = cv.norm(imgpoints[i], projected_points, cv.NORM_L2)/len(projected_points)
+    error += temp
 
+error /= len(objpoints)
+print("Error: ", error)
 cv.waitKey(0)
