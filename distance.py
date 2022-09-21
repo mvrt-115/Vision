@@ -61,9 +61,9 @@ def draw_detect(frame):
 
     for t in tags :
         #print(t.pose_t)
-        print("--------------------------")
-        print(t.tag_id, "pose:", t.pose_t)
-        print("--------------------------")
+        #print("--------------------------")
+        #print(t.tag_id, "pose:", t.pose_t)
+        #print("--------------------------")
 
         (ptA, ptB, ptC, ptD) = t.corners
         ptB = (int(ptB[0]), int(ptB[1]))
