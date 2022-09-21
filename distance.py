@@ -12,7 +12,7 @@ detector = Detector(families='tag36h11',
                     debug=0)
 
 def main():
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(5)
 
     if not cap.isOpened():
         print("Unable to open camera")
@@ -50,12 +50,15 @@ def draw_detect(frame):
     #focal length
     #fx = 3156.7
     #fy = 3129.5
-    fx = pixel_size * resolution
-    fy = fx
+    #fx = pixel_size * resolution
+    #fy = fx
+
+    fx = 511.12698364
+    fy = 871.23065186
 
     #optiocal center
-    cx = 397.33508301
-    cy = 374.0359802
+    cx = 968.75939971
+    cy = 279.759014 
 
     tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=[fx, fy, cx, cy], tag_size=0.06)
 
