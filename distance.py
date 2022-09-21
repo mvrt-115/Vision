@@ -1,4 +1,3 @@
-#from dt_apriltags import Detector
 from pupil_apriltags import Detector
 import numpy
 import cv2
@@ -31,14 +30,19 @@ def main():
         draw_detect(frame)
         cv2.imshow("April Tags", frame)
 
-        if cv2.waitKey(25) & 0xFF == ord('q'):
+        if cv2.waitKey(int(1000/30)) & 0xFF == ord('q'):
             break
         
     cap.release()
     cap.destroyAllWindows()
 
 def draw_detect(frame):
-    grayImage = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+    #image = cv2.imread(imagepath, cv2.IMREAD_GRAYSCALE)
+    #colorImg = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+    #tags = detector.detect(image, estimate_tag_pose=False, camera_params=None, tag_size=None)
+    
+    grayImage = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=(3156.71852, 3129.52243, 359.097908, 239.736909), tag_size=.038)
 
     pixel_size = 0.004
     resolution = 1280*720
@@ -56,7 +60,10 @@ def draw_detect(frame):
     tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=[fx, fy, cx, cy], tag_size=0.06)
 
     for t in tags :
-        print(t.pose_t) #fix these
+        #print(t.pose_t)
+        print("--------------------------")
+        print(t.tag_id, "pose:", t.pose_t)
+        print("--------------------------")
 
         (ptA, ptB, ptC, ptD) = t.corners
         ptB = (int(ptB[0]), int(ptB[1]))
@@ -73,5 +80,10 @@ def draw_detect(frame):
         # draw the center (x, y)-coordinates of the AprilTag
         (cX, cY) = (int(t.center[0]), int(t.center[1]))
         cv2.circle(frame, (cX, cY), 5, (0, 0, 255), -1)
+
+        #prints translation pose relative to the apriltag rather than camera
+        print(f'Transformed Translation: x: {t.pose_t[0]}, y: {-t.pose_t[1]}, z: {t.pose_t[2]}') # interested in our x, y which is (x, z)
+        print(f'Rotation: {t.pose_R}')
+        pose = t.pose_t
 
 main()
