@@ -27,7 +27,7 @@ import cv2 as cv
 import glob
 
 # termination criteria
-criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 10000, 0.01)
 
 # prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
 objp = np.zeros((6*7,3), np.float32)
@@ -43,8 +43,9 @@ for fname in images:
     img = cv.imread(fname)
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
+    patternFound = False;
     # Find the chess board corners
-    ret, corners = cv.findChessboardCorners(gray, (7,6), None)
+    ret, corners = cv.findChessboardCorners(gray, (7,6), cv.CALIB_CB_ADAPTIVE_THRESH + cv.CALIB_CB_NORMALIZE_IMAGE)
 
     # If found, add object points, image points (after refining them)
     if ret == True:
@@ -56,7 +57,7 @@ for fname in images:
         cv.drawChessboardCorners(img, (7,6), corners2, ret)
         cv.imshow('img', img)
         print("photo works")
-    cv.waitKey(100)
+    cv.waitKey(10)
 
 #calibrate
 #camera matrix, distortion coefficients, rotation and translation vectors
