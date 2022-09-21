@@ -48,16 +48,16 @@ def draw_detect(frame):
     resolution = 1280*720
 
     #focal length
-    #fx = 3156.7
+    fx = 958.1080543
     #fy = 3129.5
-    fx = pixel_size * resolution
-    fy = fx
+    #fx = pixel_size * resolution
+    fy = 960.46756285
 
     #optiocal center
-    cx = 397.33508301
-    cy = 374.0359802
+    cx = 643.74248731
+    cy = 374.57997403
 
-    tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=[fx, fy, cx, cy], tag_size=0.06)
+    tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=[fx, fy, cx, cy], tag_size=0.161)
 
     for t in tags :
         #print(t.pose_t)
@@ -83,7 +83,7 @@ def draw_detect(frame):
 
         #prints translation pose relative to the apriltag rather than camera
         print(f'Transformed Translation: x: {t.pose_t[0]}, y: {-t.pose_t[1]}, z: {t.pose_t[2]}') # interested in our x, y which is (x, z)
-        print(f'Rotation: {t.pose_R}')
+        #print(f'Rotation: {t.pose_R}')
         pose = t.pose_t
 
 main()

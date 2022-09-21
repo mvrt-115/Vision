@@ -32,7 +32,7 @@ def main():
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-        
+        cv2.waitKey(1000)
     cap.release()
 
 def draw_detect(frame):
