@@ -1,6 +1,7 @@
 import numpy
 import cv2
 import time
+import glob
 
 def main():
     cap = cv2.VideoCapture(0)
@@ -10,7 +11,7 @@ def main():
         exit()
 
     print("Press 'q' to quit")
-    fr = 0
+    fr = len(glob.glob('images/*.jpg'))
     while True:
         ok, frame = cap.read()
 

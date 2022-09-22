@@ -39,6 +39,7 @@ objpoints = [] # 3d point in real world space
 imgpoints = [] # 2d points in image plane.
 images = glob.glob('images/*.jpg')
 
+numWork = 0
 for fname in images:
     img = cv.imread(fname)
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
@@ -48,6 +49,7 @@ for fname in images:
 
     # If found, add object points, image points (after refining them)
     if ret == True:
+        numWork+=1
         objpoints.append(objp)
         corners2 = cv.cornerSubPix(gray,corners, (11,11), (-1,-1), criteria)
         imgpoints.append(corners)
@@ -56,8 +58,9 @@ for fname in images:
         cv.drawChessboardCorners(img, size, corners2, ret)
         cv.imshow('img', img)
         print("photo works")
-    cv.waitKey(100)
+    #cv.waitKey(10)
 
+print(numWork, "work")
 #calibrate
 #camera matrix, distortion coefficients, rotation and translation vectors
 ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
@@ -68,12 +71,15 @@ newcameramtx, roi = cv.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
 #print(objpoints)
 #print(imgpoints)
 
-print (mtx)
+#print (mtx)
 #print(newcameramtx)
 
 # undistort
 dst = cv.undistort(img, mtx, dist, None, newcameramtx)
-
+print('fx', mtx[0][0])
+print('fy', mtx[1][1])
+print('cx', mtx[0][2])
+print('cy', mtx[1][2])
 # crop the image
 x, y, w, h = roi
 dst = dst[y:y+h, x:x+w]

@@ -48,14 +48,14 @@ def draw_detect(frame):
     resolution = 1280*720
 
     #focal length
-    fx = 958.1080543
-    #fy = 3129.5
+    fx = 969.3881228971977
+    fy = 972.1641034650454
     #fx = pixel_size * resolution
     fy = 960.46756285
 
     #optiocal center
-    cx = 643.74248731
-    cy = 374.57997403
+    cx = 638.653318241334
+    cy = 380.97132588633445
 
     tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=[fx, fy, cx, cy], tag_size=0.161)
 
