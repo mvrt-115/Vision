@@ -1,5 +1,5 @@
 from pupil_apriltags import Detector
-import numpy
+import numpy as np
 import cv2
 import time
 
@@ -10,6 +10,13 @@ detector = Detector(families='tag36h11',
                     refine_edges=1,
                     decode_sharpening=0.25,
                     debug=0)
+
+def rot2eul(R):
+    beta = -np.arcsin(R[2,0])
+    alpha = np.arctan2(R[2,1]/np.cos(beta),R[2,2]/np.cos(beta))
+    gamma = np.arctan2(R[1,0]/np.cos(beta),R[0,0]/np.cos(beta))
+    a = np.array((alpha, beta, gamma))[0]
+    return a
 
 def main():
     
@@ -73,7 +80,8 @@ def draw_detect(frame):
 
         #prints translation pose relative to the apriltag rather than camera
         #print(f'Transformed Translation: x: {t.pose_t[0]}, y: {-t.pose_t[1]}, z: {t.pose_t[2]}') # interested in our x, y which is (x, z)
-        #print(f'Rotation: {t.pose_R}')
+        print(f'Theta: {rot2eul(t.pose_R)*180/3.1415926}')
+
         pose = t.pose_t
         new_coors(t)
 
@@ -85,16 +93,16 @@ def new_coors(t):
     z = t.pose_t[2]
 
     #TAG coordinates
-    aprilX = 10
-    aprilY = 10
-    aprilZ = 0
+    aprilX = 10 #arbitrary constant
+    aprilY = 10 #arbitrary constant
+    aprilZ = 0 #we dont care about vertical
 
     # Calculating ROBOT coordinates
     coordX = aprilX - z
     coordY = aprilY + x
     coordZ = aprilZ - y
 
-    print(f'Target Pos: x:{aprilX} y:{aprilY} z:{z}')
-    print(f'Robot  Pos: x:{coordX} y:{coordY} z:{coordZ}')
+    #print(f'Target Pos: x:{aprilX} y:{aprilY} z:{z}')
+    #print(f'Robot  Pos: x:{coordX} y:{coordY} z:{coordZ}')
     
 main()
