@@ -9,7 +9,7 @@ detector = Detector(families='tag36h11',
                     quad_sigma=0.0,
                     refine_edges=1,
                     decode_sharpening=0.25,
-                    debug=0)ß
+                    debug=0)
 
 def main():
     
@@ -91,7 +91,7 @@ def new_coors(t):
 
     # Calculating ROBOT coordinates
     coordX = aprilX - z
-    coordY = aprilY - x
+    coordY = aprilY + x
     coordZ = aprilZ - y
 
     print(f'Target Pos: x:{aprilX} y:{aprilY} z:{z}')
