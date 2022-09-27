@@ -102,7 +102,7 @@ def get_angle(t):
     return rot2eul(t.pose_R)*180/3.1415926
 
 #Convert weird matrix to euls (x, y, z rotation)
-#Don't ask, no one understands this, it just works
+#http://eecs.qmul.ac.uk/~gslabaugh/publications/euler.pdf
 def rot2eul(R):
     beta = -np.arcsin(R[2,0])
     alpha = np.arctan2(R[2,1]/np.cos(beta),R[2,2]/np.cos(beta))
