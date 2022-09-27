@@ -9,9 +9,10 @@ detector = Detector(families='tag36h11',
                     quad_sigma=0.0,
                     refine_edges=1,
                     decode_sharpening=0.25,
-                    debug=0)
+                    debug=0)ß
 
 def main():
+    
     cap = cv2.VideoCapture(0)
 
     if not cap.isOpened():
@@ -46,7 +47,7 @@ def draw_detect(frame):
     #focal length
     fx = 969.3881228971977
     fy = 972.1641034650454
-    
+  
     #optiocal center
     cx = 638.653318241334
     cy = 380.97132588633445
@@ -54,11 +55,6 @@ def draw_detect(frame):
     tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=[fx, fy, cx, cy], tag_size=0.161)
 
     for t in tags :
-        #print(t.pose_t)
-        #print("--------------------------")
-        #print(t.tag_id, "pose:", t.pose_t)
-        #print("--------------------------")
-
         (ptA, ptB, ptC, ptD) = t.corners
         ptB = (int(ptB[0]), int(ptB[1]))
         ptC = (int(ptC[0]), int(ptC[1]))
@@ -76,8 +72,29 @@ def draw_detect(frame):
         cv2.circle(frame, (cX, cY), 5, (0, 0, 255), -1)
 
         #prints translation pose relative to the apriltag rather than camera
-        print(f'Transformed Translation: x: {t.pose_t[0]}, y: {-t.pose_t[1]}, z: {t.pose_t[2]}') # interested in our x, y which is (x, z)
+        #print(f'Transformed Translation: x: {t.pose_t[0]}, y: {-t.pose_t[1]}, z: {t.pose_t[2]}') # interested in our x, y which is (x, z)
         #print(f'Rotation: {t.pose_R}')
         pose = t.pose_t
+        new_coors(t)
 
+
+def new_coors(t):
+    # Distance from april tag
+    x = t.pose_t[0]
+    y = t.pose_t[1]
+    z = t.pose_t[2]
+
+    #TAG coordinates
+    aprilX = 10
+    aprilY = 10
+    aprilZ = 0
+
+    # Calculating ROBOT coordinates
+    coordX = aprilX - z
+    coordY = aprilY - x
+    coordZ = aprilZ - y
+
+    print(f'Target Pos: x:{aprilX} y:{aprilY} z:{z}')
+    print(f'Robot  Pos: x:{coordX} y:{coordY} z:{coordZ}')
+    
 main()
