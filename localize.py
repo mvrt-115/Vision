@@ -11,15 +11,8 @@ detector = Detector(families='tag36h11',
                     decode_sharpening=0.25,
                     debug=0)
 
-def rot2eul(R):
-    beta = -np.arcsin(R[2,0])
-    alpha = np.arctan2(R[2,1]/np.cos(beta),R[2,2]/np.cos(beta))
-    gamma = np.arctan2(R[1,0]/np.cos(beta),R[0,0]/np.cos(beta))
-    a = np.array((alpha, beta, gamma))[0]
-    return a
 
 def main():
-    
     cap = cv2.VideoCapture(0)
 
     if not cap.isOpened():
@@ -48,9 +41,6 @@ def draw_detect(frame):
     grayImage = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=(3156.71852, 3129.52243, 359.097908, 239.736909), tag_size=.038)
 
-    pixel_size = 0.004
-    resolution = 1280*720
-
     #focal length
     fx = 969.3881228971977
     fy = 972.1641034650454
@@ -78,15 +68,18 @@ def draw_detect(frame):
         (cX, cY) = (int(t.center[0]), int(t.center[1]))
         cv2.circle(frame, (cX, cY), 5, (0, 0, 255), -1)
 
-        #prints translation pose relative to the apriltag rather than camera
-        #print(f'Transformed Translation: x: {t.pose_t[0]}, y: {-t.pose_t[1]}, z: {t.pose_t[2]}') # interested in our x, y which is (x, z)
-        print(f'Theta: {rot2eul(t.pose_R)*180/3.1415926}')
+#Print out coords and angle relative to field
+def printall(t):
+    #Coordinates relative to field
+    cords = get_coords(t)
+    print(f'Robot  Pos: x:{cords[0]} y:{cords[1]} z:{cords[2]}')
 
-        pose = t.pose_t
-        new_coors(t)
+    #Angle relative to field
+    angle = get_angle(t)
+    print(f'Robot  Angle:{angle}')
 
-
-def new_coors(t):
+#Return coords relative to field
+def get_coords(t):
     # Distance from april tag
     x = t.pose_t[0]
     y = t.pose_t[1]
@@ -102,7 +95,19 @@ def new_coors(t):
     coordY = aprilY + x
     coordZ = aprilZ - y
 
-    #print(f'Target Pos: x:{aprilX} y:{aprilY} z:{z}')
-    #print(f'Robot  Pos: x:{coordX} y:{coordY} z:{coordZ}')
+    return (coordX, coordY, coordZ)
     
+#Convert angle from radiuns to degrees
+def get_angle(t):
+    return rot2eul(t.pose_R)*180/3.1415926
+
+#Convert weird matrix to euls (x, y, z rotation)
+#Don't ask, no one understands this, it just works
+def rot2eul(R):
+    beta = -np.arcsin(R[2,0])
+    alpha = np.arctan2(R[2,1]/np.cos(beta),R[2,2]/np.cos(beta))
+    gamma = np.arctan2(R[1,0]/np.cos(beta),R[0,0]/np.cos(beta))
+    a = np.array((alpha, beta, gamma))[0]
+    return a
+
 main()
