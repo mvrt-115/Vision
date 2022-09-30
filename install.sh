@@ -1,6 +1,6 @@
 #!/bin/sh
 
-#Install dependencies for Linux
+#Install dependencies needed for stuff for Linux
 
 #Run as root
 if ! [ $(id -u) = 0 ];
@@ -8,5 +8,7 @@ if ! [ $(id -u) = 0 ];
         exit;
 fi
 
+#Stuff to install
 pip install pupil-apriltags
 pip install opencv-python
+pip install pynetworktables

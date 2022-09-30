@@ -3,7 +3,6 @@ from networktables import NetworkTables
 import logging
 
 # Setup
-
 cond = threading.Condition()
 notified = [False]
 
@@ -23,7 +22,6 @@ with cond:
         cond.wait()
 
 # Processing code
-
 print("Connected!")
 
 sd = NetworkTables.getTable("SmartDashboard")
