@@ -1,6 +1,7 @@
 import numpy as np
 import cv2 as cv
 import glob
+from json_stuff import JsonTools
 
 '''
 src: https://docs.opencv.org/4.x/dc/dbb/tutorial_py_calibration.html
@@ -28,7 +29,7 @@ objpoints = [] # 3d point in real world space
 imgpoints = [] # 2d points in image plane.
 images = glob.glob('images/*.jpg')
 
-print(len(images))
+print(len(images), 'images')
 
 numWork = 0
 
@@ -41,7 +42,7 @@ for fname in images:
 
     # If found, add object points, image points (after refining them)
     if ret == True:
-        numWork+=1
+        numWork += 1
         objpoints.append(objp)
         corners2 = cv.cornerSubPix(gray,corners, (11,11), (-1,-1), criteria)
         imgpoints.append(corners)
@@ -49,11 +50,9 @@ for fname in images:
         # Draw and display the corners
         cv.drawChessboardCorners(img, size, corners2, ret)
         cv.imshow('img', img)
-        print("photo works")
 
-print(numWork, "work")
+print(numWork, 'work')
 
-# Calibrate
 # Camera matrix, distortion coefficients, rotation and translation vectors
 ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 
@@ -62,10 +61,6 @@ newcameramtx, roi = cv.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
 
 # Undistort
 dst = cv.undistort(img, mtx, dist, None, newcameramtx)
-print('fx = ', mtx[0][0])
-print('fy = ', mtx[1][1])
-print('cx = ', mtx[0][2])
-print('cy = ', mtx[1][2])
 
 # Crop the image
 x, y, w, h = roi
@@ -78,4 +73,12 @@ for i in range(len(objpoints)):
     error += temp 
 
 error /= len(objpoints)
-print("error: ", error)
+
+#Write things to file
+stuff = {
+    'fx': mtx[0][0],
+    'fy': mtx[1][1],
+    'cx': mtx[0][2],
+    'cy': mtx[1][2],
+    'error' : error
+}
