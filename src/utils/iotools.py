@@ -1,6 +1,4 @@
-import json
-
-class JsonTools:
+class IOTools:
     def __init__(self):
         pass
 
@@ -14,10 +12,3 @@ class JsonTools:
         file = open(filename, "w")
         file.writelines(text)
         file.close()
-
-    def getJsonFrom(self, filename, key):
-        text = self.read(filename)
-        return json.loads(text)[key]
-
-    def writeJson(self, filename, text):
-        self.write(filename, json.dumps(text))
