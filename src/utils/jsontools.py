@@ -9,5 +9,5 @@ class JsonTools:
         text = self.tools.read(filename)
         return json.loads(text)[key]
 
-    def writeJsonStuff(self, filename, text):
+    def writeJson(self, filename, text):
         self.tools.write(filename, json.dumps(text))
