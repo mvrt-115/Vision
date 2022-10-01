@@ -3,7 +3,7 @@ import cv2 as cv
 import glob
 import sys
 
-sys.path.insert(0, '/home/lilja/Vision/src/utils/')
+sys.path.insert(0, '../utils/')
 from jsontools import JsonTools
 
 '''
