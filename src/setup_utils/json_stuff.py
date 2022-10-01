@@ -17,7 +17,7 @@ class JsonTools:
 
     def getJsonFrom(self, filename, key):
         text = self.read(filename)
-        return json.dumps(key)
+        return json.loads(text)[key]
 
     def writeJson(self, filename, text):
         self.write(filename, json.dumps(text))
