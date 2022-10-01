@@ -82,3 +82,6 @@ stuff = {
     'cy': mtx[1][2],
     'error' : error
 }
+
+tools = JsonTools()
+tools.writeJson('calibration.txt', stuff)
