@@ -2,6 +2,7 @@ from pupil_apriltags import Detector
 import numpy as np
 import cv2
 import time
+import math
 
 detector = Detector(families='tag36h11',
                     nthreads=1,
@@ -13,7 +14,7 @@ detector = Detector(families='tag36h11',
 
 
 def main():
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(2)
 
     if not cap.isOpened():
         print("Unable to open camera")
@@ -41,13 +42,10 @@ def draw_detect(frame):
     grayImage = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=(3156.71852, 3129.52243, 359.097908, 239.736909), tag_size=.038)
 
-    #focal length
-    fx = 969.3881228971977
-    fy = 972.1641034650454
-  
-    #optiocal center
-    cx = 638.653318241334
-    cy = 380.97132588633445
+    fx =  236.77719488200282
+    fy =  240.2921754424293
+    cx =  422.68668295039623
+    cy =  82.50299878265058
 
     tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=[fx, fy, cx, cy], tag_size=0.161)
 
@@ -67,12 +65,13 @@ def draw_detect(frame):
         # draw the center (x, y)-coordinates of the AprilTag
         (cX, cY) = (int(t.center[0]), int(t.center[1]))
         cv2.circle(frame, (cX, cY), 5, (0, 0, 255), -1)
+        printall(t)
 
 #Print out coords and angle relative to field
 def printall(t):
     #Coordinates relative to field
     cords = get_coords(t)
-    print(f'Robot  Pos: x:{cords[0]} y:{cords[1]} z:{cords[2]}')
+    print(f'Robot  Pos: x:{cords[0]} y:{cords[1]}')
 
     #Angle relative to field
     angle = get_angle(t)
@@ -82,20 +81,19 @@ def printall(t):
 def get_coords(t):
     # Distance from april tag
     x = t.pose_t[0]
-    y = t.pose_t[1]
-    z = t.pose_t[2]
+    y = t.pose_t[2]
 
     #TAG coordinates
     aprilX = 10 #arbitrary constant
-    aprilY = 10 #arbitrary constant
-    aprilZ = 0 #we dont care about vertical
-
+    aprilY = 0 #arbitrary constant
+    theta = 3.1415926/2
+    dx = -math.sqrt(x**2+y**2)*math.cos(theta+math.atan(x/y))
+    dy = math.sqrt(x**2+y**2)*math.sin(theta+math.atan(x/y))
     # Calculating ROBOT coordinates
-    coordX = aprilX - z
-    coordY = aprilY + x
-    coordZ = aprilZ - y
+    coordX = aprilX +dx
+    coordY = aprilY + dy
 
-    return (coordX, coordY, coordZ)
+    return (coordX, coordY)
     
 #Convert angle from radiuns to degrees
 def get_angle(t):
