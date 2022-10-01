@@ -2,7 +2,7 @@ import json
 
 class JsonTools:
     def __init__(self):
-        print('init')
+        pass
 
     def read(self, filename):
         file = open(filename, "r+")
@@ -15,6 +15,9 @@ class JsonTools:
         file.writelines(text)
         file.close()
 
-tools = JsonTools()
-tools.read('text.txt')
-tools.write('text.txt', 'heheheh')
+    def getJsonFrom(self, filename, key):
+        text = self.read(filename)
+        return json.dumps(key)
+
+    def writeJson(self, filename, text):
+        self.write(filename, json.dumps(text))
