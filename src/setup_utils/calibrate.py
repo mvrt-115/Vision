@@ -1,37 +1,26 @@
-#calibrate whatever camera we are using
-#src: https://docs.opencv.org/4.x/dc/dbb/tutorial_py_calibration.html
-
-#!!! ->
-#todo: make this a video so it can capture multiple photos? 
-#I also printed out the official chess board so we can use that tomorrow
-#!!!! <-
-
-#get variables from cameramatrix like this:
-#once we have reliable pictures
-#+------------+
-#| fx, 0,  cx |
-#| 0,  fy, cy |
-#| 0,  0,  1  |
-#+------------+
-
-'''
-Read ->
-For better results, the distance between the camera and calibration grid should 
-be approximately equal to the working distance that you intend to maintain in your 
-application. Additionally, the resolution and focus of the camera should be maintained 
-constant while taking pictures.
-'''
-
 import numpy as np
 import cv2 as cv
 import glob
 
-# termination criteria
-criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
-size = (6,9)
-# prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
-objp = np.zeros((size[0]*size[1],3), np.float32)
+'''
+src: https://docs.opencv.org/4.x/dc/dbb/tutorial_py_calibration.html
 
+Get variables from reliable cameramatrix like this:
++------------+
+| fx, 0,  cx |
+| 0,  fy, cy |
+| 0,  0,  1  |
++------------+
+'''
+
+# Termination criteria
+criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+
+# Size of chessboard
+size = (6,9)
+
+# Prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
+objp = np.zeros((size[0]*size[1],3), np.float32)
 objp[:,:2] = np.mgrid[0:size[0],0:size[1]].T.reshape(-1,2)
 
 # Arrays to store object points and image points from all the images.
@@ -39,7 +28,10 @@ objpoints = [] # 3d point in real world space
 imgpoints = [] # 2d points in image plane.
 images = glob.glob('images/*.jpg')
 
+print(len(images))
+
 numWork = 0
+
 for fname in images:
     img = cv.imread(fname)
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
@@ -58,29 +50,24 @@ for fname in images:
         cv.drawChessboardCorners(img, size, corners2, ret)
         cv.imshow('img', img)
         print("photo works")
-    #cv.waitKey(10)
 
 print(numWork, "work")
-#calibrate
-#camera matrix, distortion coefficients, rotation and translation vectors
+
+# Calibrate
+# Camera matrix, distortion coefficients, rotation and translation vectors
 ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 
 h,  w = img.shape[:2]
 newcameramtx, roi = cv.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
 
-#print(objpoints)
-#print(imgpoints)
-
-#print (mtx)
-#print(newcameramtx)
-
-# undistort
+# Undistort
 dst = cv.undistort(img, mtx, dist, None, newcameramtx)
-print('fx', mtx[0][0])
-print('fy', mtx[1][1])
-print('cx', mtx[0][2])
-print('cy', mtx[1][2])
-# crop the image
+print('fx = ', mtx[0][0])
+print('fy = ', mtx[1][1])
+print('cx = ', mtx[0][2])
+print('cy = ', mtx[1][2])
+
+# Crop the image
 x, y, w, h = roi
 dst = dst[y:y+h, x:x+w]
 cv.imwrite('calibresult.png', dst)
@@ -91,5 +78,4 @@ for i in range(len(objpoints)):
     error += temp 
 
 error /= len(objpoints)
-print("Error: ", error)
-cv.waitKey(0)
+print("error: ", error)

@@ -37,6 +37,3 @@ class Pose:
         absY = tagLoc[1] + relY
         
         network.updatePose(absX, absY, relTheta)
-        
-
-

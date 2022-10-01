@@ -3,6 +3,11 @@ import numpy
 import cv2
 import time
 
+'''
+Prints distance between camera and april tag
+'''
+
+# Detector
 detector = Detector(families='tag36h11',
                     nthreads=1,
                     quad_decimate=1.0,
@@ -43,41 +48,35 @@ def draw_detect(frame):
     pixel_size = 0.004
     resolution = 1280*720
 
-    #focal length
+    # Focal length
     fx = 969.3881228971977
     fy = 972.1641034650454
     
-    
+    # Optical center
     cx = 638.653318241334
     cy = 380.97132588633445
 
     tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=[fx, fy, cx, cy], tag_size=0.161)
 
     for t in tags :
-        #print(t.pose_t)
-        #print("--------------------------")
-        #print(t.tag_id, "pose:", t.pose_t)
-        #print("--------------------------")
-
         (ptA, ptB, ptC, ptD) = t.corners
         ptB = (int(ptB[0]), int(ptB[1]))
         ptC = (int(ptC[0]), int(ptC[1]))
         ptD = (int(ptD[0]), int(ptD[1]))
         ptA = (int(ptA[0]), int(ptA[1]))
 
-        # draw the bounding box of the AprilTag detection
+        # Draw the bounding box of the AprilTag detection
         cv2.line(frame, ptA, ptB, (0, 255, 0), 20)
         cv2.line(frame, ptB, ptC, (0, 255, 0), 20)
         cv2.line(frame, ptC, ptD, (0, 255, 0), 20)
         cv2.line(frame, ptD, ptA, (0, 255, 0), 20)
 
-        # draw the center (x, y)-coordinates of the AprilTag
+        # Draw the center (x, y)-coordinates of the AprilTag
         (cX, cY) = (int(t.center[0]), int(t.center[1]))
         cv2.circle(frame, (cX, cY), 5, (0, 0, 255), -1)
 
-        #prints translation pose relative to the apriltag rather than camera
+        # Prints translation pose relative to the apriltag rather than camera
         print(f'Transformed Translation: x: {t.pose_t[0]}, y: {-t.pose_t[1]}, z: {t.pose_t[2]}') # interested in our x, y which is (x, z)
-        #print(f'Rotation: {t.pose_R}')
         pose = t.pose_t
 
 main()
