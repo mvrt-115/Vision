@@ -1,7 +1,10 @@
 import numpy as np
 import cv2 as cv
 import glob
-from json_stuff import JsonTools
+import sys
+
+sys.path.insert(0, '/home/lilja/Vision/src/utils/')
+from jsontools import JsonTools
 
 '''
 src: https://docs.opencv.org/4.x/dc/dbb/tutorial_py_calibration.html
