@@ -2,6 +2,10 @@ from pupil_apriltags import Detector
 import numpy
 import cv2
 import time
+import sys
+
+sys.path.insert(0, 'utils/')
+from jsontools import JsonTools
 
 '''
 Prints distance between camera and april tag
@@ -17,7 +21,7 @@ detector = Detector(families='tag36h11',
                     debug=0)
 
 def main():
-    cap = cv2.VideoCapture(2)
+    cap = cv2.VideoCapture(0)
 
     if not cap.isOpened():
         print("Unable to open camera")
@@ -48,11 +52,13 @@ def draw_detect(frame):
     pixel_size = 0.004
     resolution = 1280*720
 
+    tools = JsonTools()
+
     #Okay make this read from file
-    fx = 2413.717980964179
-    fy = 2745.747875548958 
-    cx = 335.2617763182911 
-    cy = 233.0714510184041
+    fx = tools.getJsonVal("files/matrix.txt", "fx")
+    fy = tools.getJsonVal("files/matrix.txt", "fy")
+    cx = tools.getJsonVal("files/matrix.txt", "cx")
+    cy = tools.getJsonVal("files/matrix.txt", "cy")
 
     tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=[fx, fy, cx, cy], tag_size=0.161)
 

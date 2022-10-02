@@ -8,7 +8,7 @@ Takes bunch of pictures that we can use to calibrate
 '''
 
 def main():
-    cap = cv2.VideoCapture(2)
+    cap = cv2.VideoCapture(0)
 
     if not cap.isOpened():
         print("Unable to open camera")
@@ -26,7 +26,7 @@ def main():
         cv2.imshow("April Tags", frame)
         cv2.imwrite(f"images/{fr}.jpg", frame)
         fr+=1
-        if cv2.waitKey(300) & 0xFF == ord('q'):
+        if cv2.waitKey(400) & 0xFF == ord('q'):
             break
     cap.release()
 
