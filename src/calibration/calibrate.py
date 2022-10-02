@@ -86,5 +86,7 @@ stuff = {
     'error' : error
 }
 
+print(stuff)
+
 tools = JsonTools()
-tools.writeJson('files/matrix.txt', stuff)
+tools.writeJson('../files/matrix.txt', stuff)
