@@ -52,9 +52,8 @@ def draw_detect(frame):
     pixel_size = 0.004
     resolution = 1280*720
 
+    #Read focal length and camera stuff from file
     tools = JsonTools()
-
-    #Okay make this read from file
     fx = tools.getJsonVal("files/matrix.txt", "fx")
     fy = tools.getJsonVal("files/matrix.txt", "fy")
     cx = tools.getJsonVal("files/matrix.txt", "cx")
