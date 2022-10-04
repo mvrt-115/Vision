@@ -77,12 +77,12 @@ def draw_detect(frame):
 #Print out coords and angle relative to field
 def printall(t):
     #Coordinates relative to field
-    #cords = get_coords(t)
-    #print(f'Robot  Pos: x:{cords[0]*10} y:{cords[1]*10}')
+    cords = get_coords(t)
+    print(f'Robot  Pos: x:{cords[0]*10} y:{cords[1]*10}')
 
     #Angle relative to field
-    angle = get_angle(t)
-    print(f'Robot  Angle:{angle}')
+    #angle = get_angle(t)
+    #print(f'Robot  Angle:{angle}')
 
 #Return coords relative to field
 def get_coords(t):
