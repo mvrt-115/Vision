@@ -21,7 +21,7 @@ detector = Detector(families='tag36h11',
                     debug=0)
 
 def main():
-    cap = cv2.VideoCapture()
+    cap = cv2.VideoCapture(2)
 
     if not cap.isOpened():
         print("Unable to open camera")
