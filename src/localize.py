@@ -3,7 +3,6 @@ import numpy as np
 import cv2
 import time
 import math
-
 import sys
 
 sys.path.insert(0, 'utils/')
@@ -19,7 +18,7 @@ detector = Detector(families='tag36h11',
 
 
 def main():
-    cap = cv2.VideoCapture(2)
+    cap = cv2.VideoCapture(0)
 
     if not cap.isOpened():
         print("Unable to open camera")
@@ -45,16 +44,14 @@ def main():
 
 def draw_detect(frame):
     grayImage = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=(3156.71852, 3129.52243, 359.097908, 239.736909), tag_size=.038)
-
     #Read focal length and camera stuff from file
     tools = JsonTools()
     fx = tools.getJsonVal("files/matrix.txt", "fx")
     fy = tools.getJsonVal("files/matrix.txt", "fy")
     cx = tools.getJsonVal("files/matrix.txt", "cx")
     cy = tools.getJsonVal("files/matrix.txt", "cy")
-
-    tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=[fx, fy, cx, cy], tag_size=0.161)
+    tag_size = 0.1738
+    tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=[fx, fy, cx, cy], tag_size=tag_size)
 
     for t in tags :
         (ptA, ptB, ptC, ptD) = t.corners
@@ -78,11 +75,9 @@ def draw_detect(frame):
 def printall(t):
     #Coordinates relative to field
     cords = get_coords(t)
-    print(f'Robot  Pos: x:{cords[0]*10} y:{cords[1]*10}')
-
-    #Angle relative to field
-    #angle = get_angle(t)
-    #print(f'Robot  Angle:{angle}')
+    theta = math.degrees(rot2eul(t.pose_R))
+    print(f'Field Relative Robot Position: x:{cords[0]} y:{cords[1]}')
+    print(f'TAG Relative Robot Angle: theta:{theta}')
 
 #Return coords relative to field
 def get_coords(t):
@@ -93,7 +88,7 @@ def get_coords(t):
     #TAG coordinates
     aprilX = 10 #arbitrary constant
     aprilY = 0 #arbitrary constant
-    theta = 3.1415926/2
+    theta = math.pi/2 #angular displacement of apriltag in radians
     dx = -math.sqrt(x**2+y**2)*math.cos(theta+math.atan(x/y))
     dy = math.sqrt(x**2+y**2)*math.sin(theta+math.atan(x/y))
 
@@ -103,9 +98,6 @@ def get_coords(t):
 
     return (coordX, coordY)
     
-#Convert angle from radiuns to degrees
-def get_angle(t):
-    return rot2eul(t.pose_R)*180/3.1415926
 
 #Convert weird matrix to euls (x, y, z rotation)
 #http://eecs.qmul.ac.uk/~gslabaugh/publications/euler.pdf
@@ -113,7 +105,7 @@ def rot2eul(R):
     beta = -np.arcsin(R[2,0])
     alpha = np.arctan2(R[2,1]/np.cos(beta),R[2,2]/np.cos(beta))
     gamma = np.arctan2(R[1,0]/np.cos(beta),R[0,0]/np.cos(beta))
-    a = np.array((alpha, beta, gamma))[1]
+    a = np.array((alpha, beta, gamma))[1] #we only care about angle in horizontal plane for now
     return a
 
 main()

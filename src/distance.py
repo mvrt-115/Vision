@@ -47,19 +47,14 @@ def main():
 
 def draw_detect(frame):
     grayImage = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=(3156.71852, 3129.52243, 359.097908, 239.736909), tag_size=.038)
-
-    pixel_size = 0.004
-    resolution = 1280*720
-
     #Read focal length and camera stuff from file
     tools = JsonTools()
     fx = tools.getJsonVal("files/matrix.txt", "fx")
     fy = tools.getJsonVal("files/matrix.txt", "fy")
     cx = tools.getJsonVal("files/matrix.txt", "cx")
     cy = tools.getJsonVal("files/matrix.txt", "cy")
-
-    tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=[fx, fy, cx, cy], tag_size=0.161)
+    tag_size = 0.1738 #square length in meters
+    tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=[fx, fy, cx, cy], tag_size=tag_size)
 
     for t in tags :
         (ptA, ptB, ptC, ptD) = t.corners
