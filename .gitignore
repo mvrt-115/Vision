@@ -1,7 +1,6 @@
 src/calibration/images/*
 src/calibration/calibresult.png
 src/utils/__pycache__
-calibresult.png
-stupid.py
+src/calibresult.png
 CMakeCache.txt
 CMakeFiles/*
