@@ -4,6 +4,7 @@ import cv2
 import time
 import math
 import sys
+import time
 
 sys.path.insert(0, 'utils/')
 from jsontools import JsonTools
@@ -44,6 +45,8 @@ def main():
 
 def draw_detect(frame):
     grayImage = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    imgScale = 0.5
+    grayImage = cv2.resize(grayImage, (int(grayImage.shape[1] * imgScale), int(grayImage.shape[0] * imgScale)), interpolation=cv2.INTER_AREA) 
     #Read focal length and camera stuff from file
     tools = JsonTools()
     fx = tools.getJsonVal("files/matrix.txt", "fx")
@@ -51,14 +54,16 @@ def draw_detect(frame):
     cx = tools.getJsonVal("files/matrix.txt", "cx")
     cy = tools.getJsonVal("files/matrix.txt", "cy")
     tag_size = 0.1738
+    start = time.time()
     tags = detector.detect(grayImage, estimate_tag_pose=True, camera_params=[fx, fy, cx, cy], tag_size=tag_size)
+    print(f"ELAPSED: {time.time() - start}")
 
     for t in tags :
         (ptA, ptB, ptC, ptD) = t.corners
-        ptB = (int(ptB[0]), int(ptB[1]))
-        ptC = (int(ptC[0]), int(ptC[1]))
-        ptD = (int(ptD[0]), int(ptD[1]))
-        ptA = (int(ptA[0]), int(ptA[1]))
+        ptB = (int(ptB[0] / imgScale), int(ptB[1] / imgScale))
+        ptC = (int(ptC[0] / imgScale), int(ptC[1] / imgScale))
+        ptD = (int(ptD[0] / imgScale), int(ptD[1] / imgScale))
+        ptA = (int(ptA[0] / imgScale), int(ptA[1] / imgScale))
 
         # draw the bounding box of the AprilTag detection
         cv2.line(frame, ptA, ptB, (0, 255, 0), 20)
@@ -69,14 +74,14 @@ def draw_detect(frame):
         # draw the center (x, y)-coordinates of the AprilTag
         (cX, cY) = (int(t.center[0]), int(t.center[1]))
         cv2.circle(frame, (cX, cY), 5, (0, 0, 255), -1)
-        printall(t)
+        printall(t, imgScale)
 
 #Print out coords and angle relative to field
-def printall(t):
+def printall(t, scale):
     #Coordinates relative to field
     cords = get_coords(t)
     theta = math.degrees(rot2eul(t.pose_R))
-    print(f'Field Relative Robot Position: x:{cords[0]} y:{cords[1]}')
+    print(f'Field Relative Robot Position: x:{cords[0] / scale} y:{cords[1] / scale}')
     print(f'TAG Relative Robot Angle: theta:{theta}')
 
 #Return coords relative to field
